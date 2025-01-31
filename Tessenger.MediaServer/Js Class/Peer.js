@@ -1,4 +1,5 @@
 module.exports = class Peer {
+  // Constructor to initialize the Peer object with socket_id, name, and maps for transports, consumers, and producers
   constructor(socket_id, name) {
     this.id = socket_id
     this.name = name
@@ -7,10 +8,12 @@ module.exports = class Peer {
     this.producers = new Map()
   }
 
+  // Method to add a transport to the transports map
   addTransport(transport) {
     this.transports.set(transport.id, transport)
   }
 
+  // Method to connect a transport using its ID and DTLS parameters
   async connectTransport(transport_id, dtlsParameters) {
     if (!this.transports.has(transport_id)) return
 
@@ -19,6 +22,7 @@ module.exports = class Peer {
     })
   }
 
+  // Method to create a producer using the transport ID, RTP parameters, and kind
   async createProducer(producerTransportId, rtpParameters, kind) {
     //TODO handle null errors
     let producer = await this.transports.get(producerTransportId).produce({
@@ -28,6 +32,7 @@ module.exports = class Peer {
 
     this.producers.set(producer.id, producer)
 
+    // Event listener for transport close event
     producer.on(
       'transportclose',
       function () {
@@ -40,6 +45,7 @@ module.exports = class Peer {
     return producer
   }
 
+  // Method to create a consumer using the transport ID, producer ID, and RTP capabilities
   async createConsumer(consumer_transport_id, producer_id, rtpCapabilities) {
     let consumerTransport = this.transports.get(consumer_transport_id)
 
@@ -64,6 +70,7 @@ module.exports = class Peer {
 
     this.consumers.set(consumer.id, consumer)
 
+    // Event listener for transport close event
     consumer.on(
       'transportclose',
       function () {
@@ -85,6 +92,7 @@ module.exports = class Peer {
     }
   }
 
+  // Method to close a producer using its ID
   closeProducer(producer_id) {
     try {
       this.producers.get(producer_id).close()
@@ -95,14 +103,17 @@ module.exports = class Peer {
     this.producers.delete(producer_id)
   }
 
+  // Method to get a producer using its ID
   getProducer(producer_id) {
     return this.producers.get(producer_id)
   }
 
+  // Method to close all transports
   close() {
     this.transports.forEach((transport) => transport.close())
   }
 
+  // Method to remove a consumer using its ID
   removeConsumer(consumer_id) {
     this.consumers.delete(consumer_id)
   }

@@ -1,6 +1,7 @@
 const os = require('os')
 const ifaces = os.networkInterfaces()
 
+// Function to get the local IP address
 const getLocalIp = () => {
   let localIp = '127.0.0.1'
   Object.keys(ifaces).forEach((ifname) => {
@@ -17,12 +18,16 @@ const getLocalIp = () => {
   return localIp
 }
 
+// Export configuration settings
 module.exports = {
+  // Server listening IP and port
   listenIp: '0.0.0.0',
   listenPort: 3016,
+  // SSL certificate and key paths
   sslCrt: '../ssl/cert.pem',
   sslKey: '../ssl/key.pem',
 
+  // Mediasoup configuration
   mediasoup: {
     // Worker settings
     numWorkers: Object.keys(os.cpus()).length,
