@@ -4,7 +4,7 @@
 // Import packages
 const express = require("express")
 const fs = require("fs")
-const https = require("httpolyglot")
+const https = require("http")
 const socket = require("socket.io")
 const mediasoup = require("mediasoup")
 const config = require('./Js Class/config')
@@ -22,7 +22,7 @@ var options = {
 
 // Create Express app and HTTPS server
 var app = express()
-var server = https.createServer(options, app)
+var server = https.createServer( app)
 
 // Initialize socket.io with CORS settings
 var io = socket(server, {
